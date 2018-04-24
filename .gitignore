@@ -8,3 +8,5 @@
 /LoggerService/bin
 /Repository/obj
 /Repository/bin
+/.vs/AccountOwnerServer/v15/*.suo
+/.vs/AccountOwnerServer/v15/Server/sqlite3
