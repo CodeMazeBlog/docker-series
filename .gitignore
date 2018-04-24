@@ -1,5 +1,6 @@
 /AccountOwnerServer/obj
 /AccountOwnerServer/bin
+/AccountOwnerServer/Projects
 /Contracts/obj
 /Contracts/bin
 /Entities/obj
@@ -8,3 +9,7 @@
 /LoggerService/bin
 /Repository/obj
 /Repository/bin
+/Tests/bin
+/Tests/obj
+/.vs
+

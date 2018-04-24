@@ -6,10 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Repository;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AccountOwnerServer.Extensions
 {
@@ -42,8 +38,7 @@ namespace AccountOwnerServer.Extensions
 
         public static void ConfigureMySqlContext(this IServiceCollection services, IConfiguration config)
         {
-            var connectionString = config["mysqlconnection:connectionString"];
-            services.AddDbContext<RepositoryContext>(o => o.UseMySql(connectionString));
+            services.AddDbContext<RepositoryContext>(o => o.UseInMemoryDatabase("accountowner"));
         }
 
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)

@@ -31,7 +31,7 @@ namespace AccountOwnerServer.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Something went wrong inside GetAllOwners action: {ex.Message}");
+                _logger.LogError($"Something went wrong inside GetAllOwners action: {ex}");
                 return StatusCode(500, "Internal server error");
             }
         }
@@ -62,7 +62,7 @@ namespace AccountOwnerServer.Controllers
         }
 
         [HttpGet("{id}/account")]
-        public IActionResult GetOwnerWithDetails(Guid id)
+        public IActionResult GetOwnerAccounts(Guid id)
         {
             try
             {
