@@ -10,7 +10,7 @@ namespace AccountOwnerServer.Controllers
     public class AccountController : Controller
     {
         private ILoggerManager _logger;
-        private IRepositoryWrapper _repository;
+        private IRepositoryWrapper _repository; 
 
         public AccountController(ILoggerManager logger, IRepositoryWrapper repository)
         {
