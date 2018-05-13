@@ -38,7 +38,8 @@ namespace AccountOwnerServer.Extensions
 
         public static void ConfigureMySqlContext(this IServiceCollection services, IConfiguration config)
         {
-            services.AddDbContext<RepositoryContext>(o => o.UseInMemoryDatabase("accountowner"));
+            var connectionString = config["mysqlconnection:connectionString"];
+            services.AddDbContext<RepositoryContext>(o => o.UseMySql(connectionString));
         }
 
         public static void ConfigureRepositoryWrapper(this IServiceCollection services)
