@@ -14,6 +14,8 @@
 publish
 /.vs
 /AccountOwnerServer/internallog.txt
-/AccountOwnerServer/2018-04-24_logfile.txt
-/AccountOwnerServer/AccountOwnerServer.csproj.user
-/Integration/Integration.csproj.user
+/Integration/obj
+/Integration/bin
+/AccountOwnerServer/*.user
+/Tests/*.user
+/Integration/*.user

@@ -1,0 +1,15 @@
+FROM microsoft/dotnet:2-sdk
+
+WORKDIR /home/app
+
+COPY ./*.sln ./
+COPY ./*/*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p ./${file%.*}/ && mv $file ./${file%.*}/; done
+
+RUN dotnet restore
+
+COPY . .
+
+WORKDIR /home/app/Integration/
+
+ENTRYPOINT ["dotnet", "test", "--verbosity=normal"]
