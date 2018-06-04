@@ -24,4 +24,6 @@ WORKDIR /publish
 
 COPY --from=build-image /publish .
 
+ENV TEAMCITY_PROJECT_NAME = ${TEAMCITY_PROJECT_NAME}
+
 ENTRYPOINT ["dotnet", "AccountOwnerServer.dll"]
