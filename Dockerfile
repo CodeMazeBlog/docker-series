@@ -2,13 +2,9 @@ FROM microsoft/aspnetcore-build as build-image
 
 WORKDIR /home/app
 
-COPY ./AccountOwnerServer/AccountOwnerServer.csproj ./AccountOwnerServer/
-COPY ./Contracts/Contracts.csproj ./Contracts/
-COPY ./Repository/Repository.csproj ./Repository/
-COPY ./Entities/Entities.csproj ./Entities/
-COPY ./LoggerService/LoggerService.csproj ./LoggerService/
-COPY ./Tests/Tests.csproj ./Tests/
-COPY ./AccountOwnerServer.sln .
+COPY ./*.sln ./
+COPY ./*/*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p ./${file%.*}/ && mv $file ./${file%.*}/; done
 
 RUN dotnet restore
 
