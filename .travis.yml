@@ -1,0 +1,6 @@
+sudo: required
+services:
+  - docker
+script:
+  - docker-compose -f docker-compose.integration.yml up --force-recreate --abort-on-container-exit --build
+  - docker-compose -f docker-compose.integration.yml up -v
