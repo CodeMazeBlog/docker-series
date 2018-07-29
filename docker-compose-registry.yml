@@ -1,0 +1,8 @@
+version: '3.1'
+services:
+    my-registry:
+        ports:
+            - '5000:5000'
+        restart: always
+        container_name: my-registry
+        image: 'registry:2'

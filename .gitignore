@@ -19,3 +19,4 @@ publish
 /AccountOwnerServer/*.user
 /Tests/*.user
 /Integration/*.user
+.vscode/settings.json
