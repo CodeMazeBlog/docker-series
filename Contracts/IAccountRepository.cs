@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace Contracts
 {
-    public interface IAccountRepository
-    {
-        IEnumerable<Account> GetAllAccounts();
-        void CreateAccount(Account account);
-    }
+	public interface IAccountRepository : IRepositoryBase<Account>
+	{
+		IEnumerable<Account> GetAllAccounts();
+		void CreateAccount(Account account);
+	}
 }
