@@ -1,26 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AccountOwnerServer.Extensions;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using AccountOwnerServer.Extensions;
-using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Hosting;
+using NLog;
 using System.IO;
-using NLog.Extensions.Logging;
-using Contracts;
 
 namespace AccountOwnerServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
+        public Startup(IConfiguration configuration)
         {
-            loggerFactory.ConfigureNLog(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -29,24 +24,24 @@ namespace AccountOwnerServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureCors();
-
             services.ConfigureIISIntegration();
-
             services.ConfigureLoggerService();
-
             services.ConfigureMySqlContext(Configuration);
-
             services.ConfigureRepositoryWrapper();
+            services.AddAutoMapper(typeof(Startup));
 
-            services.AddMvc();
+            services.AddControllers();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
 
@@ -55,21 +50,14 @@ namespace AccountOwnerServer
                 ForwardedHeaders = ForwardedHeaders.All
             });
 
-            app.Use(async (context, next) =>
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
             {
-                await next();
-
-                if (context.Response.StatusCode == 404
-                    && !Path.HasExtension(context.Request.Path.Value))
-                {
-                    context.Request.Path = "/index.html";
-                    await next();
-                }
+                endpoints.MapControllers();
             });
-
-            app.UseStaticFiles();
-
-            app.UseMvc();
         }
     }
 }
