@@ -1,21 +1,26 @@
-using AccountOwnerServer.Extensions;
-using AutoMapper;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using NLog;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using AccountOwnerServer.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 using System.IO;
+using NLog.Extensions.Logging;
+using Contracts;
 
 namespace AccountOwnerServer
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
         {
-            LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+            loggerFactory.ConfigureNLog(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
             Configuration = configuration;
         }
 
@@ -24,24 +29,24 @@ namespace AccountOwnerServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureCors();
-            services.ConfigureIISIntegration();
-            services.ConfigureLoggerService();
-            services.ConfigureMySqlContext(Configuration);
-            services.ConfigureRepositoryWrapper();
-            services.AddAutoMapper(typeof(Startup));
 
-            services.AddControllers();
+            services.ConfigureIISIntegration();
+
+            services.ConfigureLoggerService();
+
+            services.ConfigureMySqlContext(Configuration);
+
+            services.ConfigureRepositoryWrapper();
+
+            services.AddMvc();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseCors("CorsPolicy");
 
@@ -50,14 +55,21 @@ namespace AccountOwnerServer
                 ForwardedHeaders = ForwardedHeaders.All
             });
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
+            app.Use(async (context, next) =>
             {
-                endpoints.MapControllers();
+                await next();
+
+                if (context.Response.StatusCode == 404
+                    && !Path.HasExtension(context.Request.Path.Value))
+                {
+                    context.Request.Path = "/index.html";
+                    await next();
+                }
             });
+
+            app.UseStaticFiles();
+
+            app.UseMvc();
         }
     }
 }
