@@ -1,87 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AccountOwnerServer.Extensions;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using AccountOwnerServer.Extensions;
-using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
+using NLog;
 using System.IO;
-using NLog.Extensions.Logging;
-using Swashbuckle.AspNetCore.Swagger;
 
 namespace AccountOwnerServer
 {
-    public class Startup
-    {
-        public Startup(IConfiguration configuration, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.ConfigureNLog(String.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.ConfigureCors();
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.ConfigureCors();
+			services.ConfigureIISIntegration();
+			services.ConfigureLoggerService();
+			services.ConfigureMySqlContext(Configuration);
+			services.ConfigureRepositoryWrapper();
+			services.AddAutoMapper(typeof(Startup));
 
-            services.ConfigureIISIntegration();
+			services.AddSwaggerGen(c =>
+			{
+				c.SwaggerDoc("v1", new OpenApiInfo
+				{
+					Title = "AccountOwner API",
+					Version = "v1"
+				});
+			});
 
-            services.ConfigureLoggerService();
+			services.AddControllers();
+		}
 
-            services.ConfigureMySqlContext(Configuration);
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
 
-            services.ConfigureRepositoryWrapper();
+			app.UseHttpsRedirection();
+			app.UseStaticFiles();
 
-            services.AddMvc();
+			app.UseCors("CorsPolicy");
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new Info { Title = "AccountOwner API", Version = "v1" });
-            });
-        }
+			app.UseForwardedHeaders(new ForwardedHeadersOptions
+			{
+				ForwardedHeaders = ForwardedHeaders.All
+			});
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            
-            app.UseCors("CorsPolicy");
+			app.UseRouting();
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.All
-            });
+			app.UseAuthorization();
 
-            app.Use(async (context, next) =>
-            {
-                await next();
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+			});
 
-                if (context.Response.StatusCode == 404
-                    && !Path.HasExtension(context.Request.Path.Value))
-                {
-                    context.Request.Path = "/index.html";
-                    await next();
-                }
-            });
+			// Enable middleware to serve generated Swagger as a JSON endpoint.
+			app.UseSwagger();
 
-            app.UseStaticFiles();
-
-            app.UseMvc();
-
-            app.UseSwagger();
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "AccountOwner API V1");
-            });
-        }
-    }
+			// Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+			// specifying the Swagger JSON endpoint.
+			app.UseSwaggerUI(c =>
+			{
+				c.SwaggerEndpoint("/swagger/v1/swagger.json", "AccountOwner API V1");
+			});
+		}
+	}
 }
