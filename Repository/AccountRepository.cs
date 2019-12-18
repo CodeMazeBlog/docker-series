@@ -7,11 +7,11 @@ using System.Linq;
 
 namespace Repository
 {
-    public class AccountRepository: RepositoryBase<Account>, IAccountRepository
-    {
-        public AccountRepository(RepositoryContext repositoryContext)
-            :base(repositoryContext)
-        {
+    public class AccountRepository : RepositoryBase<Account>, IAccountRepository 
+    { 
+        public AccountRepository(RepositoryContext repositoryContext) 
+            : base(repositoryContext) 
+        { 
         }
 
         public IEnumerable<Account> GetAllAccounts()
@@ -24,7 +24,6 @@ namespace Repository
         {
             account.Id = Guid.NewGuid();
             Create(account);
-            Save();
         }
     }
 }
