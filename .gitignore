@@ -1,6 +1,5 @@
 /AccountOwnerServer/obj
 /AccountOwnerServer/bin
-/AccountOwnerServer/Projects
 /Contracts/obj
 /Contracts/bin
 /Entities/obj
@@ -9,13 +8,10 @@
 /LoggerService/bin
 /Repository/obj
 /Repository/bin
-/Tests/bin
+/.vs/AccountOwnerServer/v16
+/AccountOwnerServer/*.user
 /Tests/obj
-publish
-/.vs
-/AccountOwnerServer/internallog.txt
+/Tests/bin
+/.vs/AccountOwnerServer/DesignTimeBuild/*.dtbcache
 /Integration/obj
 /Integration/bin
-/AccountOwnerServer/*.user
-/Tests/*.user
-/Integration/*.user

@@ -5,7 +5,7 @@ services:
     image: registry:latest
     container_name: my-registry
     volumes:
-      - registry:/var/lib/registry3
+      - registry:/var/lib/registry
     ports:
       - "50000:5000"
     restart: unless-stopped

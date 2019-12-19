@@ -16,11 +16,11 @@ services:
    accountownerapp:
      depends_on:
        - db
-     image: codemazeblog/accountownerapp
+     image: codemazeblog/accountowner:runtime
      build:
        context: .
      ports:
-       - "8080:80"
+       - "8080:5000"
 
 volumes:
     dbdata:

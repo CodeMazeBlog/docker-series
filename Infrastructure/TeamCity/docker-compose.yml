@@ -9,8 +9,7 @@ services:
     ports:
       - 8111:8111
   teamcity-agent:
-    image: codemazeblog/teamcity-agent-docker-compose:latest
-    build: ./agent
+    image: jetbrains/teamcity-agent:latest
     environment:
       SERVER_URL: http://teamcity:8111
     volumes:
@@ -18,9 +17,9 @@ services:
       - /opt/buildagent/work:/opt/buildagent/work
       - /opt/buildagent/temp:/opt/buildagent/temp
       - /var/run/docker.sock:/var/run/docker.sock
+   
       
 volumes:
   teamcity-server-datadir:
   teamcity-server-logs:
   teamcity-agent-conf:
-      

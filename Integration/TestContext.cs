@@ -7,31 +7,31 @@ using System.Net.Http;
 
 namespace Integration
 {
-    public class TestContext: IDisposable
-    {
-        private TestServer _server;
-        public HttpClient Client { get; private set; }
+	public class TestContext : IDisposable
+	{
+		private TestServer _server;
+		public HttpClient Client { get; private set; }
 
-        public TestContext()
-        {
-            SetUpClient();
-        }
+		public TestContext()
+		{
+			SetUpClient();
+		}
 
-        private void SetUpClient()
-        {
-            _server = new TestServer(new WebHostBuilder()
-                .UseConfiguration(new ConfigurationBuilder()
-                    .AddJsonFile("appsettings.json")
-                    .Build())
-                .UseStartup<Startup>());
+		private void SetUpClient()
+		{
+			_server = new TestServer(new WebHostBuilder()
+				.UseConfiguration(new ConfigurationBuilder()
+					.AddJsonFile("appsettings.json")
+					.Build())
+				.UseStartup<Startup>());
 
-            Client = _server.CreateClient();
-        }
+			Client = _server.CreateClient();
+		}
 
-        public void Dispose()
-        {
-            _server?.Dispose();
-            Client?.Dispose();
-        }
-    }
+		public void Dispose()
+		{
+			_server?.Dispose();
+			Client?.Dispose();
+		}
+	}
 }
