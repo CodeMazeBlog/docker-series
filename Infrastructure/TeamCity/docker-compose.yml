@@ -20,4 +20,3 @@ volumes:
   teamcity-server-datadir:
   teamcity-server-logs:
   teamcity-agent-conf:
-      
