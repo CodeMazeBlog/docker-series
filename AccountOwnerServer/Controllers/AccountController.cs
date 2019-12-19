@@ -32,7 +32,7 @@ namespace AccountOwnerServer.Controllers
 
 				_logger.LogInfo($"Returned all accounts from database.");
 
-				var accountDtos = _mapper.Map<IEnumerable<OwnerDto>>(accounts);
+				var accountDtos = _mapper.Map<IEnumerable<AccountDto>>(accounts);
 				return Ok(accountDtos);
 			}
 			catch (Exception ex)
